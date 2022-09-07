@@ -7,13 +7,24 @@
 
 import Foundation
 
-struct Reminder {
+struct Reminder: Identifiable {
+	var id: String = UUID().uuidString
 	var title: String
 	var dueDate: Date
 	var notes: String? = nil
 	var isComplete: Bool = false
 }
 
+extension Array where Element == Reminder {
+	// 특정 reminder의 인덱스를 반환하는 함수
+	func indexOfReminder(with id: Reminder.ID) -> Self.Index {
+		// 식별자와 일치하는 요소의 첫 번째 인덱스를 지정된 인덱스에 할당
+		guard let index = firstIndex(where: { $0.id == id }) else {
+			fatalError()
+		}
+		return index
+	}
+}
 
 // #If DEBUG 플래그는 출시를 위해 앱을 빌드할 때 동봉된 코드가 컴파일되는 것을 방지하는 컴파일 지시문입니다.
 // 이 플래그를 사용하여 디버그 빌드에서 코드를 테스트하거나 다음 단계에서와 같이 샘플 테스트 데이터를 제공할 수 있습니다.
