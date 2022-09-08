@@ -19,6 +19,8 @@
 		689AA69E28C85AE20046F547 /* UIColor+Today.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689AA69D28C85AE20046F547 /* UIColor+Today.swift */; };
 		689AA6A028C8892A0046F547 /* ReminderDoneButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689AA69F28C8892A0046F547 /* ReminderDoneButton.swift */; };
 		689AA6A228C88A530046F547 /* ReminderListViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689AA6A128C88A530046F547 /* ReminderListViewController+Actions.swift */; };
+		68EA48E128C985A000A9FD81 /* ReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68EA48E028C985A000A9FD81 /* ReminderViewController.swift */; };
+		68EA48E428C98C3800A9FD81 /* ReminderViewController+Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68EA48E328C98C3800A9FD81 /* ReminderViewController+Row.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +38,8 @@
 		689AA69D28C85AE20046F547 /* UIColor+Today.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Today.swift"; sourceTree = "<group>"; };
 		689AA69F28C8892A0046F547 /* ReminderDoneButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDoneButton.swift; sourceTree = "<group>"; };
 		689AA6A128C88A530046F547 /* ReminderListViewController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReminderListViewController+Actions.swift"; sourceTree = "<group>"; };
+		68EA48E028C985A000A9FD81 /* ReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderViewController.swift; sourceTree = "<group>"; };
+		68EA48E328C98C3800A9FD81 /* ReminderViewController+Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReminderViewController+Row.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,8 +56,8 @@
 		689AA67528C788310046F547 = {
 			isa = PBXGroup;
 			children = (
-				689AA68028C788310046F547 /* Today */,
 				689AA67F28C788310046F547 /* Products */,
+				689AA68028C788310046F547 /* Today */,
 			);
 			sourceTree = "<group>";
 		};
@@ -68,15 +72,16 @@
 		689AA68028C788310046F547 /* Today */ = {
 			isa = PBXGroup;
 			children = (
+				689AA69528C789410046F547 /* Models */,
 				689AA68128C788310046F547 /* AppDelegate.swift */,
 				689AA68A28C788320046F547 /* Assets.xcassets */,
 				689AA68F28C788320046F547 /* Info.plist */,
 				689AA68C28C788320046F547 /* LaunchScreen.storyboard */,
 				689AA69A28C84CDE0046F547 /* ListViewController */,
 				689AA68728C788310046F547 /* Main.storyboard */,
-				689AA69528C789410046F547 /* Models */,
 				689AA68328C788310046F547 /* SceneDelegate.swift */,
 				689AA69F28C8892A0046F547 /* ReminderDoneButton.swift */,
+				68EA48E228C98BE600A9FD81 /* DetailViewController */,
 			);
 			path = Today;
 			sourceTree = "<group>";
@@ -99,6 +104,15 @@
 				689AA6A128C88A530046F547 /* ReminderListViewController+Actions.swift */,
 			);
 			path = ListViewController;
+			sourceTree = "<group>";
+		};
+		68EA48E228C98BE600A9FD81 /* DetailViewController */ = {
+			isa = PBXGroup;
+			children = (
+				68EA48E028C985A000A9FD81 /* ReminderViewController.swift */,
+				68EA48E328C98C3800A9FD81 /* ReminderViewController+Row.swift */,
+			);
+			path = DetailViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -174,11 +188,13 @@
 			files = (
 				689AA69E28C85AE20046F547 /* UIColor+Today.swift in Sources */,
 				689AA69C28C84D110046F547 /* ReminderListViewController+DataSource.swift in Sources */,
+				68EA48E128C985A000A9FD81 /* ReminderViewController.swift in Sources */,
 				689AA68628C788310046F547 /* ReminderListViewController.swift in Sources */,
 				689AA6A028C8892A0046F547 /* ReminderDoneButton.swift in Sources */,
 				689AA6A228C88A530046F547 /* ReminderListViewController+Actions.swift in Sources */,
 				689AA69928C846910046F547 /* Date+Today.swift in Sources */,
 				689AA68228C788310046F547 /* AppDelegate.swift in Sources */,
+				68EA48E428C98C3800A9FD81 /* ReminderViewController+Row.swift in Sources */,
 				689AA68428C788310046F547 /* SceneDelegate.swift in Sources */,
 				689AA69728C789600046F547 /* Reminder.swift in Sources */,
 			);
