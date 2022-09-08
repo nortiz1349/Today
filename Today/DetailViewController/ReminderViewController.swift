@@ -9,10 +9,8 @@ import UIKit
 
 class ReminderViewController: UICollectionViewController {
 	
-	// 데이터소스는 제네릭입니다.
-	// Int 및 Row 제네릭 매개변수를 지정하면 데이터소스가 행의 섹션번호와 인스턴스에 Int 인스턴스를 사용하도록 컴파일러에 지시합니다.
-	private typealias DataSource = UICollectionViewDiffableDataSource<Int, Row>
-	private typealias SnapShot = NSDiffableDataSourceSnapshot<Int, Row>
+	private typealias DataSource = UICollectionViewDiffableDataSource<Section, Row>
+	private typealias SnapShot = NSDiffableDataSourceSnapshot<Section, Row>
 	
 	var reminder: Reminder
 	private var dataSource: DataSource!
@@ -21,6 +19,7 @@ class ReminderViewController: UICollectionViewController {
 		self.reminder = reminder
 		var listConfiguration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
 		listConfiguration.showsSeparators = false
+		listConfiguration.headerMode = .firstItemInSection
 		let listLayout = UICollectionViewCompositionalLayout.list(using: listConfiguration)
 		super.init(collectionViewLayout: listLayout)
 	}
@@ -37,24 +36,62 @@ class ReminderViewController: UICollectionViewController {
 		}
 		
 		navigationItem.title = NSLocalizedString("Reminder", comment: "Reminder view controller title")
+		navigationItem.rightBarButtonItem = editButtonItem
 		
-		updateSnapshot()
+		updateSnapshotForViewing()
+	}
+	
+	override func setEditing(_ editing: Bool, animated: Bool) {
+		super.setEditing(editing, animated: animated)
+		if editing {
+			updateSnapshotForEditing()
+		} else {
+			updateSnapshotForViewing()
+		}
 	}
 	
 	func cellRegistrationHandler(cell: UICollectionViewListCell, indexPath: IndexPath, row: Row) {
-		var contentConfiguration = cell.defaultContentConfiguration() // 이 구성은 행에 기본 스타일을 할당합니다.
-		contentConfiguration.text = text(for: row)
-		contentConfiguration.textProperties.font = UIFont.preferredFont(forTextStyle: row.textStyle)
-		contentConfiguration.image = row.image
-		cell.contentConfiguration = contentConfiguration
+		let section = section(for: indexPath)
+		switch (section, row) {
+		case (_, .header(let title)):
+			var contenConfiguration = cell.defaultContentConfiguration()
+			contenConfiguration.text = title
+			cell.contentConfiguration = contenConfiguration
+		case (.view, _):
+			var contentConfiguration = cell.defaultContentConfiguration() // 이 구성은 행에 기본 스타일을 할당합니다.
+			contentConfiguration.text = text(for: row)
+			contentConfiguration.textProperties.font = UIFont.preferredFont(forTextStyle: row.textStyle)
+			contentConfiguration.image = row.image
+			cell.contentConfiguration = contentConfiguration
+		default:
+			fatalError("Unexpected combination of section and row")
+		}
+		
 		cell.tintColor = .todayPrimaryTint
 	}
 	
-	private func updateSnapshot() {
+	private func updateSnapshotForEditing() {
 		var snapshot = SnapShot()
-		snapshot.appendSections([0])
-		snapshot.appendItems([.viewTitle, .viewDate, .viewTime, .viewNotes], toSection: 0)
+		snapshot.appendSections([.title, .date, .notes])
+		snapshot.appendItems([.header(Section.title.name)], toSection: .title)
+		snapshot.appendItems([.header(Section.date.name)], toSection: .date)
+		snapshot.appendItems([.header(Section.notes.name)], toSection: .notes)
 		dataSource.apply(snapshot)
+	}
+	
+	private func updateSnapshotForViewing() {
+		var snapshot = SnapShot()
+		snapshot.appendSections([.view])
+		snapshot.appendItems([.header(""), .viewTitle, .viewDate, .viewTime, .viewNotes], toSection: .view)
+		dataSource.apply(snapshot)
+	}
+	
+	private func section(for indexPath: IndexPath) -> Section {
+		let sectionNumber = isEditing ? indexPath.section + 1 : indexPath.section
+		guard let section = Section(rawValue: sectionNumber) else {
+			fatalError("Unable to find matching section")
+		}
+		return section
 	}
 	
 	func text(for row: Row) -> String? {
@@ -63,6 +100,7 @@ class ReminderViewController: UICollectionViewController {
 		case .viewNotes: return reminder.notes
 		case .viewTime: return reminder.dueDate.formatted(date: .omitted, time: .shortened)
 		case .viewTitle: return reminder.title
+		default: return nil
 		}
 	}
 }

@@ -10,6 +10,7 @@ import UIKit
 extension ReminderViewController {
 	// 세부 보기에 네 가지 개별 알림 세부 사항이 표시됩니다: 제목, 날짜, 시간 및 메모.
 	enum Row: Hashable {
+		case header(String)
 		case viewDate
 		case viewNotes
 		case viewTime
