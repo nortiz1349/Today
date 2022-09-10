@@ -8,9 +8,8 @@
 import UIKit
 
 class ReminderViewController: UICollectionViewController {
-	
 	private typealias DataSource = UICollectionViewDiffableDataSource<Section, Row>
-	private typealias SnapShot = NSDiffableDataSourceSnapshot<Section, Row>
+	private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Row>
 	
 	var reminder: Reminder
 	private var dataSource: DataSource!
@@ -30,6 +29,7 @@ class ReminderViewController: UICollectionViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
 		let cellRegistration = UICollectionView.CellRegistration(handler: cellRegistrationHandler)
 		dataSource = DataSource(collectionView: collectionView) { (collectionView: UICollectionView, indexPath: IndexPath, itemIdentifier: Row) in
 			return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
@@ -52,37 +52,38 @@ class ReminderViewController: UICollectionViewController {
 	
 	func cellRegistrationHandler(cell: UICollectionViewListCell, indexPath: IndexPath, row: Row) {
 		let section = section(for: indexPath)
+		print("Section = \(section); Row = \(row)")
 		switch (section, row) {
 		case (_, .header(let title)):
-			var contenConfiguration = cell.defaultContentConfiguration()
-			contenConfiguration.text = title
-			cell.contentConfiguration = contenConfiguration
+			cell.contentConfiguration = headerConfiguration(for: cell, with: title)
 		case (.view, _):
-			var contentConfiguration = cell.defaultContentConfiguration() // 이 구성은 행에 기본 스타일을 할당합니다.
-			contentConfiguration.text = text(for: row)
-			contentConfiguration.textProperties.font = UIFont.preferredFont(forTextStyle: row.textStyle)
-			contentConfiguration.image = row.image
-			cell.contentConfiguration = contentConfiguration
+			cell.contentConfiguration = defaultConfiguration(for: cell, at: row)
+		case (.title, .editText(let title)):
+			cell.contentConfiguration = titleConfiguration(for: cell, with: title)
+		case (.date, .editDate(let date)):
+			cell.contentConfiguration = dateConfiguration(for: cell, with: date)
+		case (.notes, .editText(let notes)):
+			cell.contentConfiguration = notesConfiguration(for: cell, with: notes)
 		default:
-			fatalError("Unexpected combination of section and row")
+			fatalError("Unexpected combination of section and row.")
 		}
-		
 		cell.tintColor = .todayPrimaryTint
 	}
 	
 	private func updateSnapshotForEditing() {
-		var snapshot = SnapShot()
+		var snapshot = Snapshot()
 		snapshot.appendSections([.title, .date, .notes])
-		snapshot.appendItems([.header(Section.title.name)], toSection: .title)
-		snapshot.appendItems([.header(Section.date.name)], toSection: .date)
-		snapshot.appendItems([.header(Section.notes.name)], toSection: .notes)
+		snapshot.appendItems([.header(Section.title.name), .editText(reminder.title)], toSection: .title)
+		snapshot.appendItems([.header(Section.date.name), .editDate(reminder.dueDate)], toSection: .date)
+		snapshot.appendItems([.header(Section.notes.name), .editText(reminder.notes)], toSection: .notes)
 		dataSource.apply(snapshot)
 	}
 	
 	private func updateSnapshotForViewing() {
-		var snapshot = SnapShot()
+		var snapshot = Snapshot()
 		snapshot.appendSections([.view])
 		snapshot.appendItems([.header(""), .viewTitle, .viewDate, .viewTime, .viewNotes], toSection: .view)
+		
 		dataSource.apply(snapshot)
 	}
 	
@@ -92,15 +93,5 @@ class ReminderViewController: UICollectionViewController {
 			fatalError("Unable to find matching section")
 		}
 		return section
-	}
-	
-	func text(for row: Row) -> String? {
-		switch row {
-		case .viewDate: return reminder.dueDate.dayText
-		case .viewNotes: return reminder.notes
-		case .viewTime: return reminder.dueDate.formatted(date: .omitted, time: .shortened)
-		case .viewTitle: return reminder.title
-		default: return nil
-		}
 	}
 }
